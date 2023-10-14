@@ -1,6 +1,6 @@
 Package: dfexpand
 Title: dfexpand - Automatically Expand Delimited Column Values into Multiple Binary Columns 
-Description: Provides simple interface to auto-expand delimited column values in an R data frame
+Description: This library provides a simple interface to auto-expand delimited column values in an R data frame.
 Version: 0.0.0.9000
 Authors@R: 
     person("Jeffery", "Painter", email = "jeff@jivecast.com", role = c("aut", "cre"), 
@@ -9,4 +9,3 @@ License: GPL-3 | file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-

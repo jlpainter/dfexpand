@@ -1,3 +1,21 @@
+#' @title dfexpand
+#'
+#' @description Methods to auto-expand a delimited column into multiple columns
+#'
+#' @param dataframe The dataframe that contains the information you want to
+#' expand upon.
+#' @param colname The name of the column in the provided data frame which contains
+#' delimited data elements for each row.
+#' @param delimiter This should be a single quoted character such as a comma or
+#' semi-colon which denotes how the data are separated in the column you wish
+#' to expand
+#' 
+#' @return dataframe
+#'
+#'
+#' @export
+
+
 #####################################################################
 # expand_col.R
 #
@@ -111,6 +129,7 @@ getDistinctValues <- function(entry, delimiter)
 ###############################################################################
 # Expand a dataframe that contains a column which has split entries
 ###############################################################################
+
 expand_column <-function(dataframe, colname, delimiter)
 {
 
