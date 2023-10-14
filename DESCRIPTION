@@ -1,0 +1,22 @@
+Package: ggrepel
+Version: 0.9.4
+Authors@R: c(
+    person("Jeffery", "Painter", email = "jeff@jivecast.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-9651-9904")),
+    )
+Title: dfexpand - Automatically Expand Delimited Column Values into Multiple Binary Columns 
+Description: Provides simple interface to auto-expand delimited column values in an R data frame
+Depends: R (>= 3.0.0)
+Imports: rlang (>= 0.3.0)
+Suggests: 
+VignetteBuilder: knitr
+License: GPL-3 | file LICENSE
+URL: https://github.com/jlpainter/dfexpand
+BugReports: https://github.com/jlpainter/dfexpand/issues
+RoxygenNote: 7.2.3
+Encoding: UTF-8
+NeedsCompilation: no
+Packaged: 2023-10-14 20:31:14 UTC; painter
+Author: Jeffery Painter [aut, cre] (<https://orcid.org/0000-0001-9651-9904>),
+Maintainer: Jeffery Painter <jeff@jivecast.com>
+Repository: CRAN
+Date/Publication: 2023-10-14 00:20:02 UTC
