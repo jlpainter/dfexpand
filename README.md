@@ -13,17 +13,35 @@ R module to expand a delimited column in a dataframe into multiple binary column
 ## Example Case
 
   Example: The column lists "My Favorite Programming Languages"
-           in a column titled "lang" and users could enter a variety.
+           in a column titled "lang". The individuals who were
+           surveyed could have entered one or more programming
+           languages as their favorite. An example of survey results
+           could look like the following.
 
            User 1: Python, Java
            User 2: Java, C
            User 3: Python
 
-           But you may not know the order in which the languages
-           appear. This method will extrat all the unique
-           values from this column, iterate through each row,
-           and expand the column from "lang" into 3 new columns
-
+           And in the data set, we would see something like:
+           
+            |--------|-------------|
+            | User   | lang        |
+            |--------|-------------|
+            | user_1 | Python;Java |
+            | user_2 | Java;C      |
+            | user_3 | Python      | 
+            |--------|-------------|
+           
+           While efficient for data storage, it is not easy to do any analysis
+           on this data set without splitting out the exact values. One
+           issue found with most modern libraries is that they are expecting
+           your values to be in a specific order when they are split. 
+           This method does not make that assumption.
+           
+           dfexpand's expand_column() function will extract the unique
+           values found for all users surveyed from this column, then it will
+           iterate and expand the column from "lang" into 3 new distinct columns.
+           
            New columns:
              "lang_Python", "lang_Java", and "lang_C"
 
@@ -39,6 +57,9 @@ R module to expand a delimited column in a dataframe into multiple binary column
             | user_2 |       0     |       1     |     1   |
             | user_3 |       1     |       0     |     0   |
             |--------|-------------|-------------|---------|
+
+          The method does not drop the original 'lang' column but it has not been
+          shown here for simplification.
 
 ## Example R code
 
