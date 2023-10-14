@@ -85,6 +85,15 @@
 ###############################################################################
 # Helper function that gets distinct values from a string
 ###############################################################################
+
+#' Extract the distinct values from a string given a delimiter
+#'
+#' @param entry A string to parse.
+#' @param delimiter A single character to split the string on.
+#' @return A list of distinct values found in the entry string
+#' @examples
+#' values <- getDistinctValues(entry, delimiter)
+#' 
 getDistinctValues <- function(entry, delimiter)
 {
   # First, test that the entry is not 'NA'
@@ -130,6 +139,15 @@ getDistinctValues <- function(entry, delimiter)
 # Expand a dataframe that contains a column which has split entries
 ###############################################################################
 
+#' Expand a single column containing delimited values into multiple binary columns
+#'
+#' @param dataframe The data frame containing the column we want to expand
+#' @param colname The name of the column to split on.
+#' @param delimiter A single character to split the string on.
+#' @return A list of distinct values found in the entry string
+#' @examples
+#' new_df <- expand_column(dataframe, "myColumn", ';')
+#' 
 expand_column <-function(dataframe, colname, delimiter)
 {
 
