@@ -1,11 +1,13 @@
 Package: dfexpand
 Title: Automatically Expand Delimited Column Values into Multiple Binary Columns with 'dfexpand'
-Description: Provides a simple way to convert columnar data which contains multiple, delimited values into split binary columns within a single data frame. 
+Description: Provides a simple way to convert columnar data which contains multiple, delimited values into split binary columns within a single data frame. For more information, please visit https://github.com/jlpainter/dfexpand
 Version: 0.0.1
 Authors@R: 
     person("Jeffery", "Painter", email = "jeff@jivecast.com", role = c("aut", "cre"), 
       comment = c(ORCID = "0000-0001-9651-9904"))
-License: GPL-3 | file LICENSE
+License: GPL (>= 3)
+URL: https://github.com/jlpainter/dfexpand
+BugReports: https://github.com/jlpainter/dfexpand/issues/
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
