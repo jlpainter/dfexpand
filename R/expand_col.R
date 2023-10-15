@@ -94,12 +94,11 @@
 #' @examples
 #' values <- getDistinctValues(entry, delimiter)
 #' 
-getDistinctValues <- function(entry, delimiter)
+getDistinctValues <- function(entry, delimiter, trim = TRUE, ignore_case = FALSE)
 {
   # First, test that the entry is not 'NA'
   if (is.na(entry) == FALSE )
   {
-
     # List of distinct values to collect
     distinct_values = list()
 
@@ -118,10 +117,32 @@ getDistinctValues <- function(entry, delimiter)
           # Quiet = TRUE will suppress printing output line by line
           subelements = as.list(scan(text=entry, what='', sep=delimiter, quiet=TRUE))
           for ( sub_element in subelements ) {
+            
+            if ( trim == TRUE ) {
+              # By default, trimws will trim both leading and trailing whitespace
+              # and removes "[ \t\r\n]"
+              sub_element = trimws(sub_element)
+            }
+            
+            # If we are ignoring case, convert all to lower case
+            if ( ignore_case == TRUE ) {
+              sub_element = tolower(sub_element)
+            }
+            
             distinct_values <- append(distinct_values, sub_element)
           }
         } else {
           # This is a single value entry
+          # Test for trim
+          if ( trim == TRUE ) {
+            entry = trimws(entry)
+          }
+          
+          # Test for case ignore
+          if ( ignore_case == TRUE ) {
+            entry = tolower(entry)
+          }
+
           distinct_values <- append(distinct_values, entry)
         }
       }
@@ -144,12 +165,23 @@ getDistinctValues <- function(entry, delimiter)
 #' @param dataframe The data frame containing the column we want to expand
 #' @param colname The name of the column to split on.
 #' @param delimiter A single character to split the string on.
+#' 
+#' @param trim Boolean field to trim white space when searching for unique values
+#' @param ignore_case Boolean flag if you want the split values to ignore case
+#' @param colnumber You can provide the column number in the dataframe to expand, rather than the name
+#' 
 #' @return A list of distinct values found in the entry string
 #' @examples
 #' new_df <- expand_column(dataframe, "myColumn", ';')
 #' 
-expand_column <-function(dataframe, colname, delimiter)
+expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE, ignore_case = FALSE, colnumber = NULL)
 {
+
+  # Get the column name if we were provided the column number instead  
+  if ( missing(colname) == TRUE && !missing(colnumber) == TRUE )
+  {
+    colname = colnames(dataframe[,c(colnumber,colnumber)])
+  }
 
   # Extract the unique values for this column out of the data frame
   unique_cols <- unique(dataframe[[colname]])
@@ -162,7 +194,7 @@ expand_column <-function(dataframe, colname, delimiter)
   #
   for ( entry in unique_cols )
   {
-    for ( dv in getDistinctValues( entry, delimiter ) )
+    for ( dv in getDistinctValues( entry, delimiter, trim = trim, ignore_case = ignore_case ) )
     {
       if (is.na(dv) == FALSE) {
         distinct_values <- append(distinct_values, dv)
@@ -186,7 +218,7 @@ expand_column <-function(dataframe, colname, delimiter)
     current_val = dataframe[row, colname]
     if ( length(current_val) == 1 && !is.na(current_val) )
     {
-      for ( dv in getDistinctValues(current_val, delimiter) )
+      for ( dv in getDistinctValues(current_val, delimiter, trim = trim, ignore_case = ignore_case ) )
       {
         # Update this row to have a 1
         new_col = paste0(colname, "_", dv)

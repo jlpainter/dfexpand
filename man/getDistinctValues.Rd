@@ -4,11 +4,13 @@
 \alias{getDistinctValues}
 \title{dfexpand}
 \usage{
-getDistinctValues(entry, delimiter)
+getDistinctValues(entry, delimiter, trim = TRUE, ignore_case = FALSE)
 }
 \arguments{
   \item{entry}{A string to parse.}
   \item{delimiter}{A single character to split the string on.}
+  \item{trim}{Boolean flag to signify if the leading and trailing whitespace should be trimmed for each value found.}
+  \item{ignore_case}{Boolean flag to indicate if the unique values extracted should ignore case differences or not.}
 }
 \value{
 list
@@ -16,7 +18,7 @@ list
 A list of distinct values found in the entry string
 }
 \description{
-Methods to auto-expand a delimited column into multiple columns
+  Methods to auto-expand a delimited string into a list of unique values
 }
 \examples{
   values <- getDistinctValues("a;b;c", ';')

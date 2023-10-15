@@ -75,6 +75,12 @@ R module to expand a delimited column in a dataframe into multiple binary column
     df = data.frame(rows)
 
     colnames(df) <- c("myvar")
+    #
+    # The default behavior is to trim extra whitespace from the extracted values, 
+    # but not to alter or change the case of the values. So 'Alpha' is distinct from 'alpha'
+    # but ' beta ' is the same as 'beta'. You can override this behavior with
+    # the trim and ignore case flags.
+    #
     expanded_df = expand_column(df, "myvar", myDelimiter)
 
 ```

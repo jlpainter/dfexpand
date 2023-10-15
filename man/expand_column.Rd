@@ -4,12 +4,27 @@
 \alias{expand_column}
 \title{Expand a single column containing delimited values into multiple binary columns}
 \usage{
-expand_column(dataframe, colname, delimiter)
+expand_column(
+  dataframe,
+  colname = NULL,
+  delimiter = ";",
+  trim = TRUE,
+  ignore_case = FALSE,
+  colnumber = NULL
+)
 }
 \arguments{
-  \item{dataframe}{The data frame containing the column we want to expand}
-  \item{colname}{The name of the column to split on.}
-  \item{delimiter}{A single character to split the string on.}
+\item{dataframe}{The data frame containing the column we want to expand}
+
+\item{colname}{The name of the column to split on.}
+
+\item{delimiter}{A single character to split the string on.}
+
+\item{ignore_case}{Boolean flag if you want the split values to ignore case}
+
+\item{colnumber}{You can provide the column number in the dataframe to expand, rather than the name}
+
+\item{trim}{Boolean field to trim white space when searching for unique values}
 }
 \value{
 A list of distinct values found in the entry string
@@ -18,6 +33,7 @@ A list of distinct values found in the entry string
 Expand a single column containing delimited values into multiple binary columns
 }
 \examples{
+    library('dfexpand')
     myDelimiter = ";"
 
     # Create some fake data with duplicates
@@ -29,5 +45,11 @@ Expand a single column containing delimited values into multiple binary columns
     df = data.frame(rows)
 
     colnames(df) <- c("myvar")
+    #
+    # The default behavior is to trim extra whitespace from the extracted values, 
+    # but not to alter or change the case of the values. So 'Alpha' is distinct from 'alpha'
+    # but ' beta ' is the same as 'beta'. You can override this behavior with
+    # the trim and ignore case flags.
+    #
     expanded_df = expand_column(df, "myvar", myDelimiter)
 }
