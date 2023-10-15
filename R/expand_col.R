@@ -176,12 +176,23 @@ getDistinctValues <- function(entry, delimiter, trim = TRUE, ignore_case = FALSE
 #' 
 expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE, ignore_case = FALSE, colnumber = NULL)
 {
-
-  # Get the column name if we were provided the column number instead  
-  if ( missing(colname) == TRUE && !missing(colnumber) == TRUE )
+  if ( missing(dataframe) )
   {
-    colname = colnames(dataframe[,c(colnumber,colnumber)])
+    stop("Function was called without a datafrmae")
+    return()
   }
+  
+  # Get the column name if we were provided the column number instead  
+  if ( missing(colname) )
+  {
+    if (missing(colnumber) == FALSE ) {
+      colname = colnames(dataframe)[1]
+    } else {
+      stop("The function was called without specifying a proper column name to expand.")
+      return()
+    }
+  }
+
 
   # Extract the unique values for this column out of the data frame
   unique_cols <- unique(dataframe[[colname]])
