@@ -1,6 +1,6 @@
 Package: dfexpand
 Title: Automatically Expand Delimited Column Values into Multiple Binary Columns with 'dfexpand'
-Description: This R package offers a user-friendly solution for transforming a column within a typical R data frame. It allows you to efficiently split a column containing multiple values separated by delimiters into multiple additional columns within the data frame, converting each distinct value into a binary outcome.
+Description: Implements an algorithm to effortlessly split a column in an R data frame filled with multiple values separated by delimiters. This automates the process of creating separate columns for each unique value, transforming them into binary outcomes.
 Version: 0.0.1
 Authors@R: 
     person("Jeffery", "Painter", email = "jeff@jivecast.com", role = c("aut", "cre"), 
