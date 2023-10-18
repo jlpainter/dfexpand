@@ -2,3 +2,4 @@
 
 export(expand_column)
 export(getDistinctValues)
+importFrom(stringr,str_order)

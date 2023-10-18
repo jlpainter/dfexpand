@@ -1,3 +1,7 @@
+# Dependencies
+library("stringr")
+
+
 #' @title dfexpand
 #'
 #' @description Methods to auto-expand a delimited column into multiple columns
@@ -96,63 +100,75 @@
 #' 
 getDistinctValues <- function(entry, delimiter, trim = TRUE, ignore_case = FALSE)
 {
-  # First, test that the entry is not 'NA'
-  if (is.na(entry) == FALSE )
+  # It is possible that as we iterate over the data, that we have NA in a column
+  # Therefore, we must return NA if no data was sent from the expand_col function.
+  if (is.na(entry) == TRUE )
   {
-    # List of distinct values to collect
-    distinct_values = list()
-
-    # Test non-zero length string
-    x = nchar(entry)
-    if ( is.na(x) )
-    {
-      return(NA)
-    } else {
-      if (x > 0 )
-      {
-        # Does it contain a delimiter we want to split on?
-        entry_contains_delimiter <- grepl(delimiter, entry, fixed = TRUE )
-        if ( entry_contains_delimiter == TRUE )
-        {
-          # Quiet = TRUE will suppress printing output line by line
-          subelements = as.list(scan(text=entry, what='', sep=delimiter, quiet=TRUE))
-          for ( sub_element in subelements ) {
-            
-            if ( trim == TRUE ) {
-              # By default, trimws will trim both leading and trailing whitespace
-              # and removes "[ \t\r\n]"
-              sub_element = trimws(sub_element)
-            }
-            
-            # If we are ignoring case, convert all to lower case
-            if ( ignore_case == TRUE ) {
-              sub_element = tolower(sub_element)
-            }
-            
-            distinct_values <- append(distinct_values, sub_element)
-          }
-        } else {
-          # This is a single value entry
-          # Test for trim
-          if ( trim == TRUE ) {
-            entry = trimws(entry)
-          }
-          
-          # Test for case ignore
-          if ( ignore_case == TRUE ) {
-            entry = tolower(entry)
-          }
-
-          distinct_values <- append(distinct_values, entry)
-        }
-      }
-
-      # Remove duplicates
-      distinct_values <- unique(distinct_values)
-      return(distinct_values)
-    }
-  } else {
     return(NA)
+  } else {
+
+    # A delimiter is required    
+    if ( missing(delimiter) )
+    {
+      stop("Missing delimiter")
+    } else {
+
+      # List of distinct values to collect
+      distinct_values = list()
+  
+      # Test non-zero length string
+      x = nchar(entry)
+      if ( is.na(x) )
+      {
+        return(NA)
+      } else {
+        if (x > 0 )
+        {
+          # Does it contain a delimiter we want to split on?
+          entry_contains_delimiter <- grepl(delimiter, entry, fixed = TRUE )
+          if ( entry_contains_delimiter == TRUE )
+          {
+            # Quiet = TRUE will suppress printing output line by line
+            subelements = as.list(scan(text=entry, what='', sep=delimiter, quiet=TRUE))
+            for ( sub_element in subelements ) {
+              
+              if ( trim == TRUE ) {
+                # By default, trimws will trim both leading and trailing whitespace
+                # and removes "[ \t\r\n]"
+                sub_element = trimws(sub_element)
+              }
+              
+              # If we are ignoring case, convert all to lower case
+              if ( ignore_case == TRUE ) {
+                sub_element = tolower(sub_element)
+              }
+              
+              distinct_values <- append(distinct_values, sub_element)
+            }
+          } else {
+            # This is a single value entry
+            # Test for trim
+            if ( trim == TRUE ) {
+              entry = trimws(entry)
+            }
+            
+            # Test for case ignore
+            if ( ignore_case == TRUE ) {
+              entry = tolower(entry)
+            }
+  
+            distinct_values <- append(distinct_values, entry)
+          }
+        }
+  
+        # Remove duplicates
+        distinct_values <- unique(distinct_values)
+        
+        # Sort order
+        distinct_values <- distinct_values[str_order(distinct_values, numeric = TRUE)]
+        return(distinct_values)
+      }
+    }
   }
 }
 
@@ -178,28 +194,58 @@ expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE
 {
   if ( missing(dataframe) )
   {
-    stop("Function was called without a datafrmae")
+    stop("Function was called without a dataframe")
     return()
+  } else {
+    if ( class(dataframe) != class(data.frame())) {
+      stop("Function was called without a dataframe")
+      return()
+    }
+    
   }
   
   # Get the column name if we were provided the column number instead  
   if ( missing(colname) )
   {
     if (missing(colnumber) == FALSE ) {
-      colname = colnames(dataframe)[1]
+      if ( class(colnumber) != class(123)) {
+        stop("Column number must be an integer")
+        return()
+      } else {
+        
+        # Add some error checking
+        total_columns = length(colnames(dataframe))
+        if ( colnumber < 1 )
+        {
+          stop("Column number cannot be less than 1")
+          return()
+        } else {
+          if ( colnumber > total_columns ) {
+            stop("Column number cannot exceed total number of columns in data frame")
+            return()
+          } else {
+            # Set the column name
+            colname = colnames(dataframe)[colnumber]    
+          }
+        }
+      }
     } else {
-      stop("The function was called without specifying a proper column name to expand.")
+      stop("No column was specified")
+    }
+  } else {
+    if ( class(colname) != class("string") ) {
+      stop("Column name must be provided as a string")
       return()
     }
   }
-
-
+  
+  
   # Extract the unique values for this column out of the data frame
   unique_cols <- unique(dataframe[[colname]])
-
+  
   # Build a list of distinct values
   distinct_values = list()
-
+  
   # Loop through the unique column entries and extract individual values that are
   # separated by a semi-colon. Add those to the distinct_values list above
   #
@@ -212,17 +258,17 @@ expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE
       }
     }
   }
-
+  
   # Remove duplicates
   distinct_values <- unique(distinct_values)
-
+  
   # Create the columns and initialize all values to zero
   for ( dv in distinct_values )
   {
     new_col = paste0(colname, "_", dv)
     dataframe[new_col] = 0
   }
-
+  
   # Now iterate row by row, and update the rows to be a 1 if
   # they contained that distinct value
   for (row in 1:nrow(dataframe)) {
@@ -237,9 +283,10 @@ expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE
       }
     }
   }
-
+  
   # First get the unique values found in the column
   unique_cols <- unique(dataframe[[colname]])
   return(dataframe)
 }
+
 
