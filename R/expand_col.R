@@ -192,6 +192,9 @@ getDistinctValues <- function(entry, delimiter, trim = TRUE, ignore_case = FALSE
 #' 
 expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE, ignore_case = FALSE, colnumber = NULL)
 {
+  ##############################################################################
+  # Error checking
+  ##############################################################################
   if ( missing(dataframe) )
   {
     stop("Function was called without a dataframe")
@@ -201,10 +204,11 @@ expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE
       stop("Function was called without a dataframe")
       return()
     }
-    
   }
   
+  ##############################################################################
   # Get the column name if we were provided the column number instead  
+  ##############################################################################
   if ( missing(colname) )
   {
     if (missing(colnumber) == FALSE ) {
@@ -239,6 +243,16 @@ expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE
     }
   }
   
+  # The data in this column must be character data, otherwise
+  # we cannot split strings!
+  if ( class(dataframe[[colname]]) != class("string") )
+  {
+    stop("The data in the column provided are not strings")
+    return()
+  }
+  ##############################################################################
+  # End of error checking and setup of the function data type
+  ##############################################################################
   
   # Extract the unique values for this column out of the data frame
   unique_cols <- unique(dataframe[[colname]])
@@ -261,6 +275,9 @@ expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE
   
   # Remove duplicates
   distinct_values <- unique(distinct_values)
+  
+  # Sort order
+  distinct_values <- distinct_values[str_order(distinct_values, numeric = TRUE)]  
   
   # Create the columns and initialize all values to zero
   for ( dv in distinct_values )

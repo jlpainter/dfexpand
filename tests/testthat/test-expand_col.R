@@ -119,6 +119,49 @@ testthat::test_that("errors", {
 #       Test expand_column() function
 ######################################################
 
+# Test 1
+test_that("expand_column_BasicTest",{
+  
+  # Create some fake data with duplicates
+  rows = c(
+    c("c;a;b"), c("a;b"), c("c;b"), c("d"), c("d")
+  )
+  
+  # Add to a dataframe
+  df = data.frame(rows)
+  
+  colnames(df) <- c("myvar")
+  #
+  # The default behavior is to trim extra whitespace from the extracted values, 
+  # but not to alter or change the case of the values. So 'Alpha' is distinct from 'alpha'
+  # but ' beta ' is the same as 'beta'. You can override this behavior with
+  # the trim and ignore case flags.
+  #
+  expanded_df = expand_column(df, colname = "myvar", colnumber = 1, ';', trim = TRUE, ignore_case = TRUE )
+  expected_colnames = c("myvar", "myvar_a", "myvar_b", "myvar_c", "myvar_d")
+  results <- colnames(expanded_df)
+  
+  # Test that the column names are equivalent
+  expect_equal(results, expected_colnames)
+})
+
+
+# Test 2
+test_that("expand_column_ColNumberTest",{
+  
+  # Sample dataframe
+  df <- structure(list(ID = 1:3, Colors = c("Red, Blue", "Yellow", "Green, Black"), Shapes = c("Triangle", "Square", "Circle, Oval")), class = "data.frame", row.names = c(NA, -3L))
+  # Split on colors, comma separated values
+  expanded_df = expand_column(df, colnumber = 2, delimiter = ',', trim = TRUE, ignore_case = TRUE )
+  
+  # The newly appended column names should be in alpha-numeric order
+  expected_colnames = c("ID", "Colors", "Shapes",  "Colors_black", "Colors_blue", "Colors_green", "Colors_red", "Colors_yellow" )
+  results <- colnames(expanded_df)
+  
+  # Test that the column names are equivalent
+  expect_equal(results, expected_colnames)
+})
+
 ######################################################
 # Expect errors here
 ######################################################
@@ -136,6 +179,12 @@ testthat::test_that("errors", {
     "No column was specified"
   )
  
+  # Non-string data in column
+  testthat::expect_error(
+    expand_column(data.frame(c( c(1), c(23))), colnumber = 1),
+    "The data in the column provided are not strings"
+  )
+
   # Invalid data type for data frame
   testthat::expect_error(
     expand_column("test_stuff"),
