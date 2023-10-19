@@ -300,9 +300,7 @@ expand_column <-function(dataframe, colname = NULL, delimiter = ';', trim = TRUE
       }
     }
   }
-  
-  # First get the unique values found in the column
-  unique_cols <- unique(dataframe[[colname]])
+
   return(dataframe)
 }
 
